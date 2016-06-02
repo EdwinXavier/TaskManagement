@@ -1,6 +1,9 @@
 .p-0 {
 	padding: 0px;
 }
+.padding {
+	padding: 60px 50px;
+}
 .p-t-10 {
 	padding-top: 10px;
 }
@@ -84,3 +87,4 @@
     margin-bottom: 20px;
     color: #000000;
 }
+
