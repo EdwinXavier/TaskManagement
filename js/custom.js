@@ -3,15 +3,17 @@
 */
 var TaskDetails = [
 	{
-		Id: 0,
-		TaskName: "Login UI Design",
-		TaskDescription: "Pellentesque dapibus hendrerit tortor. Ut id nisl quis enim dignissim sagittis. Quisque id mi. Nulla porta dolor. Curabitur suscipit suscipit tellus.Ut varius tincidunt libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Suspendisse potenti. Sed hendrerit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-		EmployeeName: "Edwin" 
+		id: 0,
+		taskName: "Login UI Design",
+		taskDescription: "Pellentesque dapibus hendrerit tortor. Ut id nisl quis enim dignissim sagittis. Quisque id mi. Nulla porta dolor. Curabitur suscipit suscipit tellus.Ut varius tincidunt libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Suspendisse potenti. Sed hendrerit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
+		employeeName: "Edwin",
+		status: "Assigned Task"
 	},{
-		Id: 1,
-		TaskName: "Registration UI Design",
-		TaskDescription: "Pellentesque dapibus hendrerit tortor. Ut id nisl quis enim dignissim sagittis. Quisque id mi. Nulla porta dolor. Curabitur suscipit suscipit tellus. Ut varius tincidunt libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Suspendisse potenti. Sed hendrerit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-		EmployeeName: "Xavier" 
+		id: 1,
+		taskName: "Registration UI Design",
+		taskDescription: "Pellentesque dapibus hendrerit tortor. Ut id nisl quis enim dignissim sagittis. Quisque id mi. Nulla porta dolor. Curabitur suscipit suscipit tellus. Ut varius tincidunt libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Suspendisse potenti. Sed hendrerit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
+		employeeName: "Xavier",
+		status: "In Development"
 	}
 ]
 
@@ -19,6 +21,9 @@ $(function() {
 	var selected,
 		id = 1,
 		createTask = false,
+		listView,
+		item,
+		notification,
 		taskId = $("#taskId"),
 		taskName = $("#taskName"),
 		taskDescription = $("#taskDescription"),
@@ -33,17 +38,23 @@ $(function() {
 	var getSelectedTaskDetails = function() {
 		var id = this.select().data();
 		for(var i=0; i<dataSource.data().length; i++) {
-			if(id.id === dataSource.data()[i].Id) {
+			if(id.id === dataSource.data()[i].id) {
 				selected = dataSource.data()[i];
 			}
 		}
 
-		taskId.val(selected.Id);
-		taskName.val(selected.TaskName);
-		taskDescription.val(selected.TaskDescription);
-		assignee.val(selected.EmployeeName);
+		taskId.val(selected.id);
+		taskName.val(selected.taskName);
+		taskDescription.val(selected.taskDescription);
+		assignee.val(selected.employeeName);
 		setEditPermission();
 		showPopUpWindow();
+	}
+
+	// Might be helpful for deleting the sorted cards
+	var getTheSortedItem = function(e) {
+		item = e.item.data().id;
+		listView.remove(listView.at(item));
 	}
 
 	/**
@@ -109,6 +120,8 @@ $(function() {
 	*/
 	$("#task-list").kendoListView(listViewConfig);
 
+	listView = $("#task-list").data("kendoListView").dataSource;
+
 	$("#dev-list, #review-list, #completed-list").kendoListView({
 		selectable: true,
 		change: getSelectedTaskDetails
@@ -121,6 +134,7 @@ $(function() {
 		filter: ">div.cards",
 		cursor: "move",
 		connectWith: "#dev-list, #review-list, #completed-list"
+        //start: getTheSortedItem
 	});
 
 	$("#dev-list").kendoSortable({
@@ -132,6 +146,23 @@ $(function() {
 	$("#completed-list").kendoSortable({
 		connectWith: "#dev-list, #task-list, #review-list"
 	})
+
+	notification = $("#notification").kendoNotification({
+        position: {
+            pinned: true,
+            top: 102,
+            right: 30
+        },
+        autoHideAfter: 3000,
+        stacking: "down",
+        templates: [{
+            type: "error",
+            template: $("#errorTemplate").html()
+        }, {
+        	type: "success",
+        	template: $("#successTemplate").html()
+        }]
+	}).data("kendoNotification");
 
 	/**
     * @event click
@@ -174,8 +205,17 @@ $(function() {
     * saves the new task
     */
     $("#create-new").click(function() {
-    	listViewConfig.dataSource.add({Id: ++id, TaskName: taskName.val(), TaskDescription: taskDescription.val(), 
-    									EmployeeName: assignee.val()});
-    	$("#taskDetails").data("kendoWindow").close();
+    	if(taskName.val() === "" || taskDescription.val() === "" || assignee.val() === "") {
+    		notification.show({
+	            message: "Please fill in all the details"
+	        }, "error");
+    	} else {
+    		listViewConfig.dataSource.add({id: ++id, taskName: taskName.val(), taskDescription: taskDescription.val(), 
+    									employeeName: assignee.val()});
+    		$("#taskDetails").data("kendoWindow").close();
+    		notification.show({
+	            message: "Task created successfully"
+	        }, "success");
+    	}
     })
 })

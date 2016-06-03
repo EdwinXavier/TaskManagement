@@ -26,7 +26,7 @@
 
 	    <!-- Kendo UI combined JavaScript -->
 		<script src="kendojs/kendo.all.min.js"></script>
-
+		
 		<script type="text/javascript" src="js/custom.js"></script>
 	</head>
 	<body>
@@ -46,13 +46,15 @@
 			</div>
 			<!-- End of Header container -->
 
+			<!-- Nofitication span -->
+			<span id="notification" style="display:none;"></span>
+
 			<!-- List View container -->
 			<div class="row">
 				<div class="col-md-12 p-l-15 bottom-line">
 					<h4> Task Board </h4>
 				</div>
 			</div>
-
 			<div class="row m-r-0">
 				<div class="col-md-3 p-l-15">
 					<h5> Assigned Tasks </h5>
@@ -60,7 +62,7 @@
 				</div>
 				<div class="col-md-3 p-l-15">
 					<h5> In Development </h5>
-					<div id="dev-list" class="board-style"></div>
+					<ul id="dev-list" class="board-style"></ul>
 				</div>
 				<div class="col-md-3 p-l-15">
 					<h5> In Review </h5>
@@ -103,17 +105,32 @@
 
 		<!-- Template for displaying the task in cards -->
 		<script type="text/x-kendo-template" id="template">
-			<div class="cards p-l-5 p-r-5" data-id=#:Id#>
+			<div class="cards p-l-5 p-r-5" data-id=#:id#>
 				<div class="p-t-10">
-					<h3>T-#:Id#</h3>
+					<h3>T-#:id#</h3>
 				</div>
 				<div class="p-t-10">
-					Task: <span>#:TaskName#</span>
+					Task: <span>#:taskName#</span>
 				</div>
 				<div class="p-t-10 p-b-10">
-					Assigned To: <span>#:EmployeeName#</span>
+					Assigned To: <span>#:employeeName#</span>
 				</div>
 			</div>
 		</script>
+
+		<!-- Template for error message -->
+		<script id="errorTemplate" type="text/x-kendo-template">
+            <div class="error">
+                <p>#= message #</p>
+            </div>
+        </script>
+
+        <!-- Template for success message -->
+        <script id="successTemplate" type="text/x-kendo-template">
+            <div class="success">
+                <p>#= message #</p>
+            </div>
+        </script>
+
 	</body>
 </html>

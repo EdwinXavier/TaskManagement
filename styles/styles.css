@@ -87,4 +87,20 @@
     margin-bottom: 20px;
     color: #000000;
 }
-
+.k-notification-success.k-group {
+    background: rgba(0%,60%,0%,.7) !important;
+    color: #fff !important;
+}
+.k-notification-error.k-group {
+    background: rgba(100%,0%,0%,.7) !important;
+    color: #ffffff !important;
+}
+.error, .success {
+    width: 300px;
+    height: auto;
+}
+.error > p, .success > p {
+	text-align: center;
+	margin: auto;
+	font-weight: bold;
+}
